@@ -30,6 +30,7 @@ const userSchema = new Schema(
       type: String,
       default: EUserStatus.inactive,
     },
+    avatar: String || null,
   },
   { versionKey: false, timestamps: true }
 );

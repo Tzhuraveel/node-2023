@@ -1,8 +1,10 @@
 import { NextFunction, Request, Response } from "express";
 import { ObjectSchema } from "joi";
+import { isObjectIdOrHexString } from "mongoose";
 
 import { EDynamicallyAction } from "../enum";
 import { ApiError } from "../error";
+import { User } from "../model";
 import { userService } from "../service";
 
 class CommonMiddleware {
@@ -20,6 +22,40 @@ class CommonMiddleware {
         next(e);
       }
     };
+  }
+  public isValidId(idField: string, from: "params" | "query" = "params") {
+    return (req: Request, res: Response, next: NextFunction) => {
+      try {
+        if (!isObjectIdOrHexString(req[from][idField])) {
+          next(new ApiError("Id not valid", 400));
+          return;
+        }
+        req.res.locals.id = req[from][idField];
+        next();
+      } catch (e) {
+        next(e);
+      }
+    };
+  }
+  public async getByIdOrThrow(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const { userId } = req.params;
+
+      const user = await User.findById(userId);
+
+      if (!user) {
+        throw new ApiError("User not found", 422);
+      }
+
+      res.locals.user = user;
+      next();
+    } catch (e) {
+      next(e);
+    }
   }
   public getDynamicallyAndCheckExistence(
     actionWithFoundField: EDynamicallyAction,
