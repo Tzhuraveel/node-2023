@@ -13,7 +13,7 @@ import { configs } from "../config";
 
 class S3Service {
   constructor(
-    private client = new S3Client({
+    private client: S3Client = new S3Client({
       region: configs.AWS_S3_REGION,
       credentials: {
         accessKeyId: configs.AWS_ACCESS_KEY,
@@ -41,15 +41,6 @@ class S3Service {
     return filePath;
   }
 
-  private buildPathForUpdate(
-    fileName: string,
-    itemType: string,
-    itemId: Types.ObjectId
-  ): string {
-    extname(fileName);
-    return `${itemType}/${itemId}/${v4()}${extname(fileName)}`;
-  }
-
   public async deleteAvatar(photoName: string): Promise<void> {
     await this.client.send(
       new DeleteObjectCommand({
@@ -57,6 +48,15 @@ class S3Service {
         Key: photoName,
       })
     );
+  }
+
+  private buildPathForUpdate(
+    fileName: string,
+    itemType: string,
+    itemId: Types.ObjectId
+  ): string {
+    extname(fileName);
+    return `${itemType}/${itemId}/${v4()}${extname(fileName)}`;
   }
 }
 export const s3Service = new S3Service();

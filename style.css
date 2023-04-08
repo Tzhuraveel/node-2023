@@ -1,0 +1,19 @@
+.container{
+    background-color: wheat;
+    min-height: 500px;
+    position: relative;
+    width: 400px;
+}
+body{
+    box-sizing: border-box;
+}
+.container-for-input{
+    width: 100%;
+    bottom: 0;
+    left: 0;
+    position: absolute;
+}
+.input-text{
+    height: 24px;
+    width: 100%;
+}

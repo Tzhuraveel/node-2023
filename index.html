@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.socket.io/4.6.0/socket.io.min.js" integrity="sha384-c79GN5VsunZvi+Q/WObgk2in0CbZsHnjEqvFxC5DxHn9lTfNce2WW6h2pH6u/kF+" crossorigin="anonymous"></script>
+</head>
+
+<body>
+<div class="container">
+    <div class="container-for-text"></div>
+   <div class="container-for-input">
+       <input type="text" placeholder="enter your text" class="input-text">
+   </div>
+</div>
+<button class="button--message-send">Send massage</button>
+<button class="button--join-room1">Join room one</button>
+<button class="button--join-room2">Join room two</button>
+
+
+
+<script>
+    const socket = io("http://localhost:5100")
+
+
+    const input = document.querySelector(".input-text");
+
+    let allowedButton = false;
+
+    if(input.value){
+        allowedButton = true
+    }else if(!input.value){
+        allowedButton = false
+    }
+    const button = document.querySelector(".button--message-send")
+
+    const joinRoomOne = document.querySelector(".button--join-room1")
+    const joinRoomTwo = document.querySelector(".button--join-room2")
+
+
+    button.onclick = () => {
+        socket.emit("message", input.value)
+    }
+
+    joinRoomOne.onclick = () => {
+        socket.emit("join:roomOne", { roomId: 1 })
+    }
+
+    joinRoomTwo.onclick = () => {
+        socket.emit("join:roomTwo", { roomId: 2 })
+
+    }
+
+    socket.on("get:message", (data) => {
+        const p = document.createElement("p");
+
+        p.innerText = data
+
+        const containerDiv = document.querySelector(".container-for-text");
+        containerDiv.appendChild(p)
+    })
+
+    socket.on("user:joined", (data) => {
+        const p = document.createElement("p");
+        p.innerText = `${data.socketId} ${data.action}`
+        const containerDiv = document.querySelector(".container-for-text");
+        containerDiv.appendChild(p)
+    })
+
+</script>
+</body>
+</html>

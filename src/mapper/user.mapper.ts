@@ -5,6 +5,7 @@ import { IUser } from "../type";
 class UserMapper {
   public toResponse(user: IUser): IUser {
     return {
+      _id: user._id,
       name: user.name,
       email: user.email,
       password: user.password,

@@ -26,6 +26,7 @@ class FileMiddleware {
         return;
       }
 
+      console.log("hello world");
       if (!avatarConfig.MIMETYPES.includes(mimetype)) {
         next(new ApiError(`File ${name} has invalid format`, 400));
         return;
