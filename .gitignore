@@ -1,3 +1,5 @@
 .idea
 node-2023.iml
 node_modules
+.env
+dist
